@@ -1,7 +1,8 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager _navManager
 
 <div>
-    <a href="/" class="button">Back to Home</a>
+    <a href="@_navManager.BaseUri" class="button">Back to Home</a>
 </div>
 <main class="px-3">
     @Body

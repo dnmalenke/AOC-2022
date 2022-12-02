@@ -1,0 +1,142 @@
+﻿@page "/day2"
+
+
+<h3>Day 2</h3>
+
+<h3>Input</h3>
+
+<EditForm Model="_input" OnSubmit="Run">
+    <InputTextArea class="form-control" @bind-Value="_input" />
+    <br />
+    <button class="btn btn-primary">Submit</button>
+</EditForm>
+<br />
+<p style="white-space:pre-wrap">@_result</p>
+
+
+@code {
+    private string _input = "";
+    private string _result = "";
+
+    private void Run()
+    {
+        List<int> sums = new();
+
+        int score = 0;
+        foreach (var line in _input.Split("\n"))
+        {
+            switch (line[2])
+            {
+                case 'X':
+                    score += 1;
+
+                    switch (line[0])
+                    {
+                        case 'A':
+                            score += 3;
+                            break;
+                        case 'B':
+                            score += 0;
+                            break;
+                        case 'C':
+                            score += 6;
+                            break;
+                    }
+                    break;
+                case 'Y':
+                    score += 2;
+
+                    switch (line[0])
+                    {
+                        case 'A':
+                            score += 6;
+                            break;
+                        case 'B':
+                            score += 3;
+                            break;
+                        case 'C':
+                            score += 0;
+                            break;
+                    }
+                    break;
+                case 'Z':
+                    score += 3;
+
+                    switch (line[0])
+                    {
+                        case 'A':
+                            score += 0;
+                            break;
+                        case 'B':
+                            score += 6;
+                            break;
+                        case 'C':
+                            score += 3;
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        _result = $"part 1 score: {score}";
+        score = 0;
+
+        foreach (var line in _input.Split("\n"))
+        {
+            switch (line[2])
+            {
+                case 'X':
+                    switch (line[0])
+                    {
+                        case 'A':
+                            score += 3;
+                            break;
+                        case 'B':
+                            score += 1;
+                            break;
+                        case 'C':
+                            score += 2;
+                            break;
+                    }
+                    break;
+                case 'Y':
+                    score += 3;
+
+                    switch (line[0])
+                    {
+                        case 'A':
+                            score += 1;
+                            break;
+                        case 'B':
+                            score += 2;
+                            break;
+                        case 'C':
+                            score += 3;
+                            break;
+                    }
+                    break;
+                case 'Z':
+                    score += 6;
+
+                    switch (line[0])
+                    {
+                        case 'A':
+                            score += 2;
+                            break;
+                        case 'B':
+                            score += 3;
+                            break;
+                        case 'C':
+                            score += 1;
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        _result += $"\npart 2 score: {score}";
+
+
+        StateHasChanged();
+    }
+}

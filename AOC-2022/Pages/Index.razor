@@ -3,29 +3,14 @@
 <h1>Advent of code 2022</h1>
 
 <nav class="flex-column">
-    <div class="nav-item col-3 mb-3">
-        <NavLink class="nav-link btn btn-primary" style="color:white" href="day1" Match="NavLinkMatch.All">
-            Day 1
-        </NavLink>
-    </div>
-    <div class="nav-item col-3 mb-3">
-        <NavLink class="nav-link btn btn-primary" style="color:white" href="day2" Match="NavLinkMatch.All">
-            Day 2
-        </NavLink>
-    </div>
-    <div class="nav-item col-3 mb-3">
-        <NavLink class="nav-link btn btn-primary" style="color:white" href="day3" Match="NavLinkMatch.All">
-            Day 3
-        </NavLink>
-    </div>
-    <div class="nav-item col-3 mb-3">
-        <NavLink class="nav-link btn btn-primary" style="color:white" href="day4" Match="NavLinkMatch.All">
-            Day 4
-        </NavLink>
-    </div>
-    <div class="nav-item col-3 mb-3">
-        <NavLink class="nav-link btn btn-primary" style="color:white" href="day5" Match="NavLinkMatch.All">
-            Day 5
-        </NavLink>
-    </div>
+    @for(int i = 1; i <= 6; i++)
+    {
+        string href = $"day{i}";
+        string label = $"Day {i}";
+        <div class="nav-item col-3 mb-3">
+            <NavLink class="nav-link btn btn-primary" style="color:white" href="@href" Match="NavLinkMatch.All">
+                @label
+            </NavLink>
+        </div>
+    }
 </nav>

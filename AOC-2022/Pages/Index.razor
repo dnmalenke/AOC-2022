@@ -3,7 +3,7 @@
 <h1>Advent of code 2022</h1>
 
 <nav class="flex-column">
-    @for(int i = 1; i <= 6; i++)
+  @*  @for(int i = 1; i <= 6; i++)
     {
         string href = $"day{i}";
         string label = $"Day {i}";
@@ -12,5 +12,19 @@
                 @label
             </NavLink>
         </div>
+    }*@
+    @{
+        var type = typeof(DayTemplate);
+        var types = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(s => s.GetTypes()).Where(t => t.IsSubclassOf(type));
+
+        foreach(var p in types)
+        {
+              <div class="nav-item col-3 mb-3">
+            <NavLink class="nav-link btn btn-primary" style="color:white" href="@{p.Name}" Match="NavLinkMatch.All">
+                @p.Name.Insert(3," ")
+            </NavLink>
+        </div>
+        }
     }
 </nav>

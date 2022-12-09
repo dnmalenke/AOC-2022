@@ -96,7 +96,6 @@ namespace AOC_2022.Pages
                 }
             }
 
-
             // left
             for (int i = 0; i < height; i++)
             {
@@ -240,12 +239,11 @@ namespace AOC_2022.Pages
                 }
             }
 
-
             _result += $"\npart 2 max: {scores.MaxBy(x => x.Value).Key.X},{scores.MaxBy(x => x.Value).Key.Y} : {scores.MaxBy(x => x.Value).Value}";
 
         }
 
-        public struct Point
+        private struct Point
         {
             public Point(int x, int y)
             {
@@ -255,6 +253,5 @@ namespace AOC_2022.Pages
             public int X { get; set; }
             public int Y { get; set; }
         }
-
     }
 }

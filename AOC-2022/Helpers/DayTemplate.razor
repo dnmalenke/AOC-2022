@@ -1,6 +1,13 @@
-﻿
+﻿@inject NavigationManager _navManager
+@inject AOCHelper _aocHelper
 
 <h3>@_title</h3>
+
+<button class="btn btn-secondary" @onclick="() => Save(1)">Save 1</button>
+<button class="btn btn-primary" @onclick="() => Load(1)">Load 1</button>
+
+<button class="btn btn-secondary" @onclick="() => Save(2)">Save 2</button>
+<button class="btn btn-primary" @onclick="() => Load(2)">Load 2</button>
 
 <h3>Input</h3>
 
@@ -14,5 +21,30 @@
 
 
 @code {
-    
+    private int _day = -1;
+
+    private async Task Save(int slot)
+    {
+        await _aocHelper.SaveInput(GetDay(), slot, _input);
+        _result += $"\nSaved to slot {slot}";
+    }
+
+    private async Task Load(int slot)
+    {
+        _input = await _aocHelper.LoadInput(GetDay(), slot);
+        _result += $"\nLoaded from slot {slot}";
+    }
+
+    private int GetDay()
+    {
+        if (_day == -1)
+        {
+            if (int.TryParse(_navManager.Uri[(_navManager.Uri.LastIndexOf('/') + 4)..], out int day))
+            {
+                _day = day;
+            }
+        }
+
+        return _day;
+    }
 }

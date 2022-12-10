@@ -10,18 +10,18 @@ namespace AOC_2022.Pages
         protected override void Run()
         {
             _result = "";
-            int sum = 0;
+            Point headPos = new(0, 0);
+            Point tailPos = new(0, 0);
 
-            Point headPos = new Point(0, 0);
-            Point tailPos = new Point(0, 0);
-
-            HashSet<Point> points = new HashSet<Point>();
-            points.Add(new Point(tailPos.X, tailPos.Y));
+            HashSet<Point> points = new()
+            {
+                new Point(tailPos.X, tailPos.Y)
+            };
 
             foreach (var l in _input.Split('\n'))
             {
                 int c = int.Parse(l.Split(' ')[1]);
-                Point prevPos = new Point(headPos.X, headPos.Y);
+                Point prevPos = new(headPos.X, headPos.Y);
                 switch (l.Split(' ')[0][0])
                 {
                     case 'U':
@@ -87,15 +87,10 @@ namespace AOC_2022.Pages
                 }
             }
 
-            sum = points.Count;
-
+            int sum = points.Count;
             _result += $"\npart 1 sum: {sum}";
 
-
-            headPos = new Point(0, 0);
-            tailPos = new Point(0, 0);
-
-            List<Point> queue = new List<Point>();
+            List<Point> queue = new();
 
             for (int i = 0; i < 10; i++)
             {
@@ -104,12 +99,15 @@ namespace AOC_2022.Pages
 
             headPos = queue[0];
 
-            points = new();
-            points.Add(new Point(queue[9].X, queue[9].Y));
+            points = new()
+            {
+                new Point(queue[9].X, queue[9].Y)
+            };
 
-            HashSet<Point> points2 = new HashSet<Point>();
-
-            points2.Add(new Point(queue[0].X, queue[0].Y));
+            HashSet<Point> points2 = new()
+            {
+                new Point(queue[0].X, queue[0].Y)
+            };
 
             foreach (var l in _input.Split('\n'))
             {
@@ -248,7 +246,7 @@ namespace AOC_2022.Pages
 
         }
 
-        private void Move(Point dest, Point src)
+        private static void Move(Point dest, Point src)
         {
             if (dest.X != src.X)
             {
@@ -279,14 +277,14 @@ namespace AOC_2022.Pages
         private void Print(List<Point> points2)
         {
             _result += "\n";
-            for (int i = points2.MaxBy(p => p.Y).Y; i >= points2.MinBy(p => p.Y).Y; i--)
+            for (int i = points2.MaxBy(p => p.Y)?.Y ?? 0; i >= points2.MinBy(p => p.Y)?.Y; i--)
             {
                 _result += "\n";
-                for (int j = points2.MinBy(p => p.X).X; j <= points2.MaxBy(p => p.X).X; j++)
+                for (int j = points2.MinBy(p => p.X)?.X ?? 0; j <= points2.MaxBy(p => p.X)?.X; j++)
                 {
                     if (points2.FirstOrDefault(p => p.X == j && p.Y == i) != null)
                     {
-                        _result += points2.IndexOf(points2.FirstOrDefault(p => p.X == j && p.Y == i));
+                        _result += points2.IndexOf(points2.FirstOrDefault(p => p.X == j && p.Y == i) ?? new(0,0));
                     }
                     else
                     {
@@ -306,7 +304,7 @@ namespace AOC_2022.Pages
                 {
                     if (points2.FirstOrDefault(p => p.X == j && p.Y == i) != null)
                     {
-                        _result += points2.IndexOf(points2.FirstOrDefault(p => p.X == j && p.Y == i));
+                        _result += points2.IndexOf(points2.FirstOrDefault(p => p.X == j && p.Y == i) ?? new(0, 0));
                     }
                     else
                     {
@@ -347,7 +345,7 @@ namespace AOC_2022.Pages
             }
         }
 
-        private bool TooFar(Point h, Point t)
+        private static bool TooFar(Point h, Point t)
         {
             return Math.Abs(h.X - t.X) > 1 || Math.Abs(h.Y - t.Y) > 1;
         }

@@ -168,7 +168,7 @@ namespace AOC_2022.Pages
 
             var d = points.Distinct().ToList();
 
-            int max = 0;
+            //int max = 0;
 
             _result += $"\npart 1 sum: {sum}";
 

@@ -7,7 +7,7 @@
   "linkerEnabled": true,
   "resources": {
     "assembly": {
-      "AOC-2022.dll": "sha256-+H9p\/+SVlIt2o6SMWVZN0n45h+4ii1JI5MyJa8Pdx2s=",
+      "AOC-2022.dll": "sha256-Pj\/pRM7jWAVkcx+K\/G\/9HE59ejqFoti9ROAtG\/ix1oc=",
       "Microsoft.AspNetCore.Components.dll": "sha256-TKwFGFVRUwbxJ4vTyvHbtteJcI5PBbtC7IIZR94Jbbs=",
       "Microsoft.AspNetCore.Components.Forms.dll": "sha256-OkU+CJEqpHrVR+K+tyPRf89B3r4SwPFzAWB54+\/3xgU=",
       "Microsoft.AspNetCore.Components.Web.dll": "sha256-ZyaFJBid38fUrCJCxJErli7Jhc6HWpwG3zdx+i6ihUs=",

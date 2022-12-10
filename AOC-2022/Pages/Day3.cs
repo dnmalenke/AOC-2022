@@ -14,8 +14,8 @@ namespace AOC_2022.Pages
 
             foreach (var line in _input.Split("\n"))
             {
-                string comp1 = line.Substring(0, line.Length / 2);
-                string comp2 = line.Substring(line.Length / 2);
+                string comp1 = line[..(line.Length / 2)];
+                string comp2 = line[(line.Length / 2)..];
                 foreach (var item in comp1.Intersect(comp2))
                 {
                     if (char.IsLower(item))

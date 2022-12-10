@@ -25,12 +25,12 @@ namespace AOC_2022.Pages
             }
             sums.Add(sum);
             sums.Sort();
-            _result = $"part 1 max sum: {sums.Max().ToString()}";
+            _result = $"part 1 max sum: {sums.Max()}";
             _result += "\npart 2: top 3 amounts:\n";
             sum = 0;
             foreach (var item in sums.TakeLast(3))
             {
-                _result += $"{item.ToString()}\n";
+                _result += $"{item}\n";
                 sum += item;
             }
             _result += $"top 3 sum: {sum}";

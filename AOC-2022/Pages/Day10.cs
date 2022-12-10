@@ -13,12 +13,13 @@ namespace AOC_2022.Pages
             int cyc = 0;
             int sum = 0;
 
-            Dictionary<string, int> map = new Dictionary<string, int>();
+            Dictionary<string, int> map = new()
+            {
+                { "addx", 2 },
+                { "noop", 1 }
+            };
 
-            map.Add("addx", 2);
-            map.Add("noop", 1);
-
-            List<int> track = new List<int>()
+            List<int> track = new()
             {
                 20,
                 60,
@@ -90,8 +91,6 @@ namespace AOC_2022.Pages
                 {
                     li++;
                 }
-
-              
             }
 
             for (int i = 0; i < 6; i++)
@@ -106,7 +105,7 @@ namespace AOC_2022.Pages
             _result += $"\npart 2: {cyc}";
         }
 
-        private string Op(string li)
+        private static string Op(string li)
         {
             return li.Split(' ')[0];
         }

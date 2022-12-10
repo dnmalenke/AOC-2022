@@ -8,8 +8,6 @@ namespace AOC_2022.Pages
     {
         protected override void Run()
         {
-            List<int> sums = new();
-
             int score = 0;
             foreach (var line in _input.Split("\n"))
             {

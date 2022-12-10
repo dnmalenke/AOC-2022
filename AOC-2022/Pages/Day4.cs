@@ -43,7 +43,7 @@ namespace AOC_2022.Pages
             StateHasChanged();
         }
 
-        private bool ContainEachOther(Pair pair0, Pair pair1)
+        private static bool ContainEachOther(Pair pair0, Pair pair1)
         {
             Pair bigger = pair0.Length > pair1.Length ? pair0 : pair1;
             Pair smaller = pair0.Length > pair1.Length ? pair1 : pair0;
@@ -51,7 +51,7 @@ namespace AOC_2022.Pages
             return bigger.Range.Intersect(smaller.Range).ToList().Count == smaller.Length;
         }
 
-        private bool OverlapAtAll(Pair pair0, Pair pair1)
+        private static bool OverlapAtAll(Pair pair0, Pair pair1)
         {
             Pair bigger = pair0.Length > pair1.Length ? pair0 : pair1;
             Pair smaller = pair0.Length > pair1.Length ? pair1 : pair0;

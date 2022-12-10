@@ -18,7 +18,7 @@ namespace AOC_2022.Pages
             {
                 List<char> d = q.Distinct().ToList();
 
-                if (q.Count == 4 && d.Count() == 4)
+                if (q.Count == 4 && d.Count == 4)
                 {
                     break;
                 }
@@ -42,7 +42,7 @@ namespace AOC_2022.Pages
             {
                 List<char> d = q.Distinct().ToList();
 
-                if (q.Count == 14 && d.Count() == 14)
+                if (q.Count == 14 && d.Count == 14)
                 {
                     break;
                 }

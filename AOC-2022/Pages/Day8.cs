@@ -27,8 +27,8 @@ namespace AOC_2022.Pages
                 y++;
             }
 
-            List<Point> points = new List<Point>();
-            Dictionary<Point, int> scores = new Dictionary<Point, int>();
+            List<Point> points = new();
+            Dictionary<Point, int> scores = new();
             // top
             for (int i = 0; i < width; i++)
             {

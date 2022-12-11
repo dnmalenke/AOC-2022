@@ -7,7 +7,7 @@
   "linkerEnabled": true,
   "resources": {
     "assembly": {
-      "AOC-2022.dll": "sha256-FCkQiP7nj8samgHBkiNwMoT8sHGg79oMrY9WWjqm218=",
+      "AOC-2022.dll": "sha256-yQutPh5I8xH2PTXcgy3kjbaNBQQXvwxXoPCfO\/op9h4=",
       "Blazored.LocalStorage.dll": "sha256-eXVgTw72kEn74FZgDQbLtvAmXbiZDSj5gzUnxVmwowQ=",
       "Microsoft.AspNetCore.Components.dll": "sha256-eMP3uIKAguA03dOz9r9pNP740qcLeGuo5NMPvvtZu+Y=",
       "Microsoft.AspNetCore.Components.Forms.dll": "sha256-OkU+CJEqpHrVR+K+tyPRf89B3r4SwPFzAWB54+\/3xgU=",

@@ -99,6 +99,7 @@ namespace AOC_2022.Pages
 
             headPos = queue[0];
 
+
             points = new()
             {
                 new Point(queue[9].X, queue[9].Y)

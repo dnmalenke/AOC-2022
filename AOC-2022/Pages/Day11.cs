@@ -14,7 +14,6 @@ namespace AOC_2022.Pages
         protected override void Run()
         {
             _result = "";
-            int cyc = 0;
             ulong sum = 0;
 
             var m = ParseIn();
@@ -128,7 +127,7 @@ namespace AOC_2022.Pages
 
     public class Monkey
     {
-        public string Operation { get; set; }
+        public string Operation { get; set; } = "";
         public List<ulong> Items { get; set; } = new();
         public ulong Test { get; set; }
         public int TrueDest { get; set; }

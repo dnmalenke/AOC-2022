@@ -8,225 +8,279 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq.Expressions;
 using System.Numerics;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace AOC_2022.Pages
 {
-    [Route($"/{nameof(Day12)}")]
-    public class Day12 : DayTemplate
+    [Route($"/{nameof(Day13)}")]
+    public class Day13 : DayTemplate
     {
         protected override void Run()
         {
             _result = "";
+            int sum = 0;
 
             var spl = _input.Split('\n');
-            int[,] grid = new int[spl[0].Length, spl.Length];
 
-            Position goal = new(0, 0);
-            // Position start = new(0, 0);
+            string prev = "";
+            List<PacketPair> packets = new();
+            List<Packet> ps = new();
 
-            for (int x = 0; x < spl[0].Length; x++)
+            foreach (var line in spl)
             {
-                for (int y = 0; y < spl.Length; y++)
+                if (line != "")
                 {
-                    grid[x, y] = spl[y][x] == 'E' ? 'z' - 96 : spl[y][x] == 'S' ? 'a' - 96 : spl[y][x] - 96;
-                    if (spl[y][x] == 'E')
-                    {
-                        goal = new(x, y);
-                    }
-                    else if (spl[y][x] == 'S')
-                    {
-                        // start = new(x, y);
-                    }
-                    var p = new Position(x, y);
+                    ps.Add(new Packet(line));
+                }
+
+                if (prev == "")
+                {
+                    prev = line;
+                }
+                else
+                {
+                    packets.Add(new(prev, line));
+                    prev = "";
                 }
             }
 
-            //List<Node> pQ = new(); // list of open nodes
-            //pQ.Add(nodes[start]); // add starting node
-            //List<Node> closed = new();
-            //bool done = false;
-
-            Expression<Func<Position, Position, bool>> ffx = (s, dest) => grid[s.X, s.Y] >= grid[dest.X, dest.Y] || grid[s.X, s.Y] + 1 == grid[dest.X, dest.Y];
-            var ff = ffx.Compile();
-
-            // BreadthFirstSearch(start, goal, (p) => ValidDests(p, grid, ff));
-
-            int min = int.MaxValue;
-            for (int x = 0; x < spl[0].Length; x++)
+            for (int i = 0; i < packets.Count; i++)
             {
-                for (int y = 0; y < spl.Length; y++)
-                {
-                    if (grid[x, y] == 1)
-                    {
-                        var start = new Position(x, y);
-                        var c = PathFinding.BreadthFirstSearch(start, goal, (p) => ValidDests(p, grid, ff));
+                bool? res = packets[i].Compare();
 
-                        if (c.Any() && c.FirstOrDefault()?.X == start.X && c.FirstOrDefault()?.Y == start.Y)
-                        {
-                            if (c.Count < min)
-                            {
-                                min = c.Count;
-                            }
-                        }
+                if (res == null)
+                {
+                    _result += $"\n {i + 1}: null";
+                }
+                else
+                {
+                    // Console.WriteLine($"{i + 1} returned {((bool)res ? "true" : "false")}");
+                    _result += $"\n {i + 1}:  {((bool)res ? "true" : "false")}";
+
+                    if ((bool)res)
+                    {
+                        sum += 1 + i;
                     }
                 }
             }
 
-            Console.WriteLine("DONE");
+            _result += $"\npart 1: {sum}\n\n\n";
+            ps.Sort();
+            foreach (var item in ps)
+            {
+                _result += $"\n{item.P}";
+            }
 
-            //List<Node> path = new();
+            int p1i = ps.IndexOf(ps.FirstOrDefault(p => p.P == "[[2]]") ?? new("")) + 1;
+            int p2i = ps.IndexOf(ps.FirstOrDefault(p => p.P == "[[6]]") ?? new("")) + 1;
 
-            //var cur = nodes[goal];
-            //while (cur != null)
-            //{
-            //    path.Insert(0, cur);
-            //    cur = cur.Parent;
-            //}
+            _result += $"\npart 2: {p1i * p2i}";
+        }
+    }
 
-            //char[,] pathVis = new char[spl[0].Length, spl.Length];
-
-            //for (int x = 0; x < spl[0].Length; x++)
-            //{
-            //    for (int y = 0; y < spl.Length; y++)
-            //    {
-            //        var ps = path.Where(n => n.Position.X == x && n.Position.Y == y).ToList();
-
-            //        if (ps.Count == 1)
-            //        {
-            //            var i = path.IndexOf(ps[0]);
-            //            if (i != path.Count - 1)
-            //            {
-            //                pathVis[x, y] = DirChar(ps[0].Position, path[i + 1].Position);
-            //            }
-            //            else
-            //            {
-            //                pathVis[x, y] = 'E';
-            //            }
-            //        }
-            //        else if (ps.Count > 1)
-            //        {
-            //            Console.WriteLine($"Error {x}, {y}");
-            //        }
-            //        else
-            //        {
-            //            pathVis[x, y] = '.';
-            //        }
-            //    }
-            //}
-
-            //_result += $"\npart 1 sum: {path.Count - 1}";
-
-            //_result += $"\n{StringifyGrid(pathVis)}";
-
-
-            _result += $"\npart 2: {min - 1}";
+    public class Packet : IComparable<Packet>
+    {
+        public string P { get; set; }
+        public Packet(string p)
+        {
+            P = p;
         }
 
-
-
-
-        public char DirChar(Position cur, Position n)
+        public int CompareTo(Packet? other)
         {
-            if (cur.Y < n.Y)
+            if (other == null)
             {
-                return 'v';
+                return 0;
             }
 
-            if (cur.Y > n.Y)
+            bool? res = new PacketPair(P, other.P).Compare();
+
+            if (res == null)
             {
-                return '^';
+                Console.WriteLine($"Bad: {P}, {other.P}");
+                return 0;
             }
 
-            if (cur.X < n.X)
+            //if (P == "[[[]]]" || other.P == "[[[]]]")
+            //    Console.WriteLine($"{P} vs {other.P} returned {((bool)res ? "true" : "false")}");
+
+            if ((bool)res)
             {
-                return '>';
+                return -1;
             }
 
-            if (cur.X > n.X)
-            {
-                return '<';
-            }
-            return 'x';
+            return 1;
+        }
+    }
+
+    public class PacketPair
+    {
+        public string P1 { get; set; }
+        public string P2 { get; set; }
+
+        public PacketPair(string p1, string p2)
+        {
+            P1 = p1;
+            P2 = p2;
         }
 
-        public string StringifyGrid(char[,] grid)
+        public bool? Compare()
         {
-            StringBuilder sb = new();
+            return CompareList(P1, P2);
+        }
 
-            for (int y = 0; y <= grid.GetUpperBound(1); y++)
+        public static List<string> SplitPacket(string l)
+        {
+            List<string> lSpl = new();
+
+            string temp = "";
+            int end = -1;
+            for (int i = 1; i < l.Length; i++)
             {
-                for (int x = 0; x <= grid.GetUpperBound(0); x++)
+                if (end != -1)
                 {
-                    sb.Append(grid[x, y]);
+                    if (i == end)
+                    {
+                        lSpl.Add(temp);
+                        temp = "";
+                        end = -1;
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (l[i] == '[')
+                    {
+                        end = IndexOfEnd(l[i..]) + 1 + i;
+                    }
+
+                    if (l[i] == ',' || l[i] == ']')
+                    {
+                        lSpl.Add($"[{temp}]");
+                        temp = "";
+                        continue;
+                    }
                 }
 
-                sb.Append('\n');
+                temp += l[i];
             }
 
-            return sb.ToString();
+            return lSpl;
         }
-
-        private static IEnumerable<Position> Surrounding(Position pos) =>
-            new[]
-            {
-                pos with {X = pos.X + 1},
-                pos with {X = pos.X - 1},
-                pos with {Y = pos.Y + 1},
-                pos with {Y = pos.Y - 1}
-            };
-
-        private bool InBounds(Position p, int[,] grid)
+        public bool? CompareList(string l, string r)
         {
-            return p.X >= 0 && p.Y >= 0 && p.X <= grid.GetUpperBound(0) && p.Y <= grid.GetUpperBound(1);
-        }
+            Console.WriteLine($"Compare {l} vs {r}");
+            bool? res = null;
 
-        public List<Position> ValidDests(Position p, int[,] grid, Func<Position, Position, bool> isValid)
-        {
-            List<Position> res = new();
+            var lSpl = SplitPacket(l);
+            var rSpl = SplitPacket(r);
 
-            foreach (var item in Surrounding(p))
+
+            if (lSpl.Count == 1 && rSpl.Count == 1)
             {
-                if (InBounds(item, grid) && isValid.Invoke(p, item))
+                if (r != rSpl[0] && l == lSpl[0] && l.Length == 2)
                 {
-                    res.Add(item);
+                    return true;
                 }
+
+                if (l != lSpl[0] && r == rSpl[0] && r.Length == 2)
+                {
+                    return false;
+                }
+
+                var lSpl2 = SplitPacket(lSpl[0]);
+                var rSpl2 = SplitPacket(rSpl[0]);
+
+                if (lSpl2.Count == 1 && rSpl2.Count == 1 && rSpl2[0] == rSpl[0] && lSpl2[0] == lSpl[0])
+                {
+                    if (rSpl[0][1..^1].Length == 0 && lSpl[0][1..^1].Length == 0)
+                    {
+                        return null;
+                    }
+
+                    if (rSpl[0][1..^1].Length == 0)
+                    {
+                        return false;
+                    }
+
+                    if (lSpl[0][1..^1].Length == 0)
+                    {
+                        return true;
+                    }
+
+                    int rn = int.Parse(rSpl[0][1..^1]);
+                    int ln = int.Parse(lSpl[0][1..^1]);
+
+                    if (rn == ln)
+                    {
+                        return null;
+                    }
+
+                    if (ln < rn)
+                    {
+                        return true;
+                    }
+
+                    if (ln > rn)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    lSpl = lSpl2;
+                    rSpl = rSpl2;
+                }
+            }
+
+            int i;
+            for (i = 0; i < lSpl.Count; i++)
+            {
+                if (i >= rSpl.Count)
+                {
+                    // r ran out
+                    return false;
+                }
+
+                res = CompareList(lSpl[i], rSpl[i]);
+
+                if (res != null)
+                {
+                    return res;
+                }
+            }
+
+            if (i < rSpl.Count)
+            {
+                return true;
             }
 
             return res;
         }
 
-        public int Distance(Position s, Position d)
+        public static int IndexOfEnd(string l)
         {
-            //return Math.Abs(s.Y - d.Y) + Math.Abs(s.X - d.X);
-            return (int)Math.Round(Math.Sqrt(Math.Pow(s.X - d.X, 2) + Math.Pow(s.Y - d.Y, 2)));
+            int level = 0;
+            for (int i = 0; i < l.Length; i++)
+            {
+                if (l[i] == '[')
+                {
+                    level++;
+                }
+
+                if (l[i] == ']')
+                {
+                    level--;
+
+                    if (level == 0)
+                    {
+                        return i;
+                    }
+                }
+            }
+
+            return -1;
         }
     }
-
-
-
-    public sealed record class Position : IEquatable<Position>, PathFinding.IPathable<Position>
-    {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public Position? Parent { get; set; }
-
-        public Position(int x, int y)
-        {
-            X = x;
-            Y = y;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(X, Y);
-        }
-
-        public bool Equals(Position? other)
-        {
-            return other != null && X == other.X && Y == other.Y;
-        }
-    }
-
-
 }

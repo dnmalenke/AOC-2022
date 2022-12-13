@@ -17,7 +17,7 @@ namespace AOC_2022.Helpers
         }
 
         /// <summary>
-        /// Returns a list of T starting at start containing the steps to goal or an empty list if a path cannot be found
+        /// Returns a list of T starting at start containing the steps to goal or an empty list if a path cannot be found 
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="start"></param>
@@ -72,6 +72,16 @@ namespace AOC_2022.Helpers
             return result;
         }
 
+        /// <summary>
+        /// Returns a list of T starting at start containing the steps to goal or an empty list if a path cannot be found 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="start"></param>
+        /// <param name="goal"></param>
+        /// <param name="neighborsFunc">Function that returns neighbors for a given T</param>
+        /// <param name="distanceFunc">Function that returns the distance between two Ts</param>
+        /// <param name="costFunc">Function that returns the cost to travel from T1 to T2</param>
+        /// <returns></returns>
         public static List<T> AStarSearch<T>(T start, T goal, Func<T, List<T>> neighborsFunc, Func<T, T, int> distanceFunc, Func<T, T, int> costFunc) where T : IEquatable<T>, IPathable<T>
         {
             PriorityQueue<T, int> pQ = new(); // list of open nodes
@@ -96,9 +106,17 @@ namespace AOC_2022.Helpers
 
                 var d = neighborsFunc(q);
 
-                foreach (var item in d)
+                if (!g.ContainsKey(q))
                 {
-                    T successor = item;
+                    g.Add(q, 0);
+                }
+
+                foreach (T successor in d)
+                {
+                    if (!g.ContainsKey(successor))
+                    {
+                        g.Add(successor, 0);
+                    }
 
                     var tCost = g[q] + costFunc.Invoke(q, successor);
 
@@ -126,13 +144,24 @@ namespace AOC_2022.Helpers
                         }
                         else
                         {
+                            if (!f.ContainsKey(successor))
+                            {
+                                f.Add(successor, 0);
+                            }
+
                             f[successor] = tCost + distanceFunc.Invoke(successor, goal);
+                            g[successor] = tCost;
                             pQ.Enqueue(successor, f[successor]);
                         }
                     }
 
                     successor.Parent = q;
                 }
+            }
+
+            if (!done)
+            {
+                return new();
             }
 
             var cur = closed.FirstOrDefault(n => n.Equals(goal));

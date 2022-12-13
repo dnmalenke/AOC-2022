@@ -23,7 +23,7 @@ namespace AOC_2022.Pages
             int[,] grid = new int[spl[0].Length, spl.Length];
 
             Position goal = new(0, 0);
-            // Position start = new(0, 0);
+            Position start = new(0, 0);
 
             for (int x = 0; x < spl[0].Length; x++)
             {
@@ -36,7 +36,7 @@ namespace AOC_2022.Pages
                     }
                     else if (spl[y][x] == 'S')
                     {
-                        // start = new(x, y);
+                        start = new(x, y);
                     }
                     var p = new Position(x, y);
                 }
@@ -50,74 +50,105 @@ namespace AOC_2022.Pages
             Expression<Func<Position, Position, bool>> ffx = (s, dest) => grid[s.X, s.Y] >= grid[dest.X, dest.Y] || grid[s.X, s.Y] + 1 == grid[dest.X, dest.Y];
             var ff = ffx.Compile();
 
-            // BreadthFirstSearch(start, goal, (p) => ValidDests(p, grid, ff));
+            var star = PathFinding.AStarSearch(start, goal, (p) => ValidDests(p, grid, ff), Distance, (s, d) => 1);
 
             int min = int.MaxValue;
-            for (int x = 0; x < spl[0].Length; x++)
-            {
-                for (int y = 0; y < spl.Length; y++)
-                {
-                    if (grid[x, y] == 1)
-                    {
-                        var start = new Position(x, y);
-                        var c = PathFinding.BreadthFirstSearch(start, goal, (p) => ValidDests(p, grid, ff));
-
-                        if (c.Any() && c.FirstOrDefault()?.X == start.X && c.FirstOrDefault()?.Y == start.Y)
-                        {
-                            if (c.Count < min)
-                            {
-                                min = c.Count;
-                            }
-                        }
-                    }
-                }
-            }
-
-            Console.WriteLine("DONE");
-
-            //List<Node> path = new();
-
-            //var cur = nodes[goal];
-            //while (cur != null)
-            //{
-            //    path.Insert(0, cur);
-            //    cur = cur.Parent;
-            //}
-
-            //char[,] pathVis = new char[spl[0].Length, spl.Length];
 
             //for (int x = 0; x < spl[0].Length; x++)
             //{
             //    for (int y = 0; y < spl.Length; y++)
             //    {
-            //        var ps = path.Where(n => n.Position.X == x && n.Position.Y == y).ToList();
+            //        if (grid[x, y] == 1)
+            //        {
+            //            start = new Position(x, y);
+            //            var c = PathFinding.BreadthFirstSearch(start, goal, (p) => ValidDests(p, grid, ff));
 
-            //        if (ps.Count == 1)
-            //        {
-            //            var i = path.IndexOf(ps[0]);
-            //            if (i != path.Count - 1)
+            //            if (c.Any() && c.FirstOrDefault()?.X == start.X && c.FirstOrDefault()?.Y == start.Y)
             //            {
-            //                pathVis[x, y] = DirChar(ps[0].Position, path[i + 1].Position);
+            //                if (c.Count < min)
+            //                {
+            //                    min = c.Count;
+            //                }
             //            }
-            //            else
-            //            {
-            //                pathVis[x, y] = 'E';
-            //            }
-            //        }
-            //        else if (ps.Count > 1)
-            //        {
-            //            Console.WriteLine($"Error {x}, {y}");
-            //        }
-            //        else
-            //        {
-            //            pathVis[x, y] = '.';
             //        }
             //    }
             //}
 
-            //_result += $"\npart 1 sum: {path.Count - 1}";
+            Console.WriteLine("DONE");
 
-            //_result += $"\n{StringifyGrid(pathVis)}";
+            var path = star;
+
+            char[,] pathVis = new char[spl[0].Length, spl.Length];
+
+            for (int x = 0; x < spl[0].Length; x++)
+            {
+                for (int y = 0; y < spl.Length; y++)
+                {
+                    var ps = path.Where(n => n.X == x && n.Y == y).ToList();
+
+                    if (ps.Count == 1)
+                    {
+                        var i = path.IndexOf(ps[0]);
+                        if (i != path.Count - 1)
+                        {
+                            pathVis[x, y] = DirChar(ps[0], path[i + 1]);
+                        }
+                        else
+                        {
+                            pathVis[x, y] = 'E';
+                        }
+                    }
+                    else if (ps.Count > 1)
+                    {
+                        Console.WriteLine($"Error {x}, {y}");
+                    }
+                    else
+                    {
+                        pathVis[x, y] = '.';
+                    }
+                }
+            }
+
+
+            _result += $"\npart 1 sum: {path.Count - 1}";
+
+            _result += $"\n{StringifyGrid(pathVis)}";
+
+            path = PathFinding.BreadthFirstSearch(start, goal, (p) => ValidDests(p, grid, ff));
+
+            pathVis = new char[spl[0].Length, spl.Length];
+
+            for (int x = 0; x < spl[0].Length; x++)
+            {
+                for (int y = 0; y < spl.Length; y++)
+                {
+                    var ps = path.Where(n => n.X == x && n.Y == y).ToList();
+
+                    if (ps.Count == 1)
+                    {
+                        var i = path.IndexOf(ps[0]);
+                        if (i != path.Count - 1)
+                        {
+                            pathVis[x, y] = DirChar(ps[0], path[i + 1]);
+                        }
+                        else
+                        {
+                            pathVis[x, y] = 'E';
+                        }
+                    }
+                    else if (ps.Count > 1)
+                    {
+                        Console.WriteLine($"Error {x}, {y}");
+                    }
+                    else
+                    {
+                        pathVis[x, y] = '.';
+                    }
+                }
+            }
+
+            _result += $"\n\n{StringifyGrid(pathVis)}";
+            _result += $"\npart 1 sum: {path.Count - 1}";
 
 
             _result += $"\npart 2: {min - 1}";
@@ -196,7 +227,7 @@ namespace AOC_2022.Pages
             return res;
         }
 
-        public int Distance(Position s, Position d)
+        public static int Distance(Position s, Position d)
         {
             //return Math.Abs(s.Y - d.Y) + Math.Abs(s.X - d.X);
             return (int)Math.Round(Math.Sqrt(Math.Pow(s.X - d.X, 2) + Math.Pow(s.Y - d.Y, 2)));

@@ -18,11 +18,13 @@ namespace AOC_2022.Pages
                 new Point(tailPos.X, tailPos.Y)
             };
 
-            foreach (var l in _input.Split('\n'))
+            foreach (var l in _input.Lines)
             {
-                int c = int.Parse(l.Split(' ')[1]);
+                int c = l.ParseNumber();
+
                 Point prevPos = new(headPos.X, headPos.Y);
-                switch (l.Split(' ')[0][0])
+
+                switch (l[0])
                 {
                     case 'U':
                         for (int i = 0; i < c; i++)
@@ -110,11 +112,11 @@ namespace AOC_2022.Pages
                 new Point(queue[0].X, queue[0].Y)
             };
 
-            foreach (var l in _input.Split('\n'))
+            foreach (var l in _input.Lines)
             {
-                int c = int.Parse(l.Split(' ')[1]);
-               // _result += $"\n{l}";
-                switch (l.Split(' ')[0][0])
+                int c = l.ParseNumber();
+                // _result += $"\n{l}";
+                switch (l[0])
                 {
                     case 'U':
                         for (int i = 0; i < c; i++)
@@ -135,7 +137,7 @@ namespace AOC_2022.Pages
                             }
 
                             points2.Add(new Point(queue[0].X, queue[0].Y));
-                          //  Print2(queue);
+                            //  Print2(queue);
                         }
                         break;
                     case 'D':
@@ -156,7 +158,7 @@ namespace AOC_2022.Pages
                                 }
                             }
                             points2.Add(new Point(queue[0].X, queue[0].Y));
-                         //   Print2(queue);
+                            //   Print2(queue);
                         }
                         break;
                     case 'L':
@@ -166,7 +168,7 @@ namespace AOC_2022.Pages
 
                             for (int j = 0; j < 9; j++)
                             {
-                               // Print2(queue);
+                                // Print2(queue);
                                 if (TooFar(queue[j], queue[j + 1]))
                                 {
                                     Move(queue[j], queue[j + 1]);
@@ -178,7 +180,7 @@ namespace AOC_2022.Pages
                                 }
                             }
                             points2.Add(new Point(queue[0].X, queue[0].Y));
-                          //  Print2(queue);
+                            //  Print2(queue);
                         }
                         break;
                     case 'R':
@@ -199,7 +201,7 @@ namespace AOC_2022.Pages
                                 }
                             }
                             points2.Add(new Point(queue[0].X, queue[0].Y));
-                          //  Print2(queue);
+                            //  Print2(queue);
                         }
                         break;
                 }
@@ -208,6 +210,7 @@ namespace AOC_2022.Pages
             sum = points.Count;
 
             _result += $"\npart 2: {sum}";
+            _result += $"\n{Point.StringifyList(queue, p => queue.IndexOf(p).ToString()[0], reverse: true)}";
 
             //for (int i = points.MaxBy(p => p.Y).Y; i >= points.MinBy(p => p.Y).Y; i--)
             //{
@@ -273,8 +276,7 @@ namespace AOC_2022.Pages
                 }
             }
         }
-        
-        
+
         private void Print(List<Point> points2)
         {
             _result += "\n";
@@ -285,7 +287,7 @@ namespace AOC_2022.Pages
                 {
                     if (points2.FirstOrDefault(p => p.X == j && p.Y == i) != null)
                     {
-                        _result += points2.IndexOf(points2.FirstOrDefault(p => p.X == j && p.Y == i) ?? new(0,0));
+                        _result += points2.IndexOf(points2.FirstOrDefault(p => p.X == j && p.Y == i) ?? new(0, 0));
                     }
                     else
                     {
@@ -312,37 +314,6 @@ namespace AOC_2022.Pages
                         _result += ".";
                     }
                 }
-            }
-        }
-
-        private class Point : IEquatable<Point>
-        {
-            public Point(int x, int y)
-            {
-                X = x;
-                Y = y;
-            }
-            public int X { get; set; }
-            public int Y { get; set; }
-
-            public override bool Equals(object? obj)
-            {
-                return obj != null &&
-                X == ((Point)obj).X &&
-                Y == ((Point)obj).Y;
-            }
-
-            public bool Equals(Point? other)
-            {
-                return other != null &&
-                X == ((Point)other).X &&
-                Y == ((Point)other).Y;
-            }
-
-            // override object.GetHashCode
-            public override int GetHashCode()
-            {
-                return HashCode.Combine(X, Y);
             }
         }
 

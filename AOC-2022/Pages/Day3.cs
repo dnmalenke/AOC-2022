@@ -12,7 +12,7 @@ namespace AOC_2022.Pages
 
             _result = "";
 
-            foreach (var line in _input.Split("\n"))
+            foreach (var line in _input.Lines)
             {
                 string comp1 = line[..(line.Length / 2)];
                 string comp2 = line[(line.Length / 2)..];
@@ -33,18 +33,11 @@ namespace AOC_2022.Pages
 
             sum = 0;
 
-            foreach (var line in _input.Split("\n").Chunk(3))
+            foreach (var line in _input.Lines.Chunk(3))
             {
                 foreach (var item in line[0].Intersect(line[1]).Intersect(line[2]))
                 {
-                    if (char.IsLower(item))
-                    {
-                        sum += item - '`';
-                    }
-                    else
-                    {
-                        sum += item - 38;
-                    }
+                    sum += item - (char.IsLower(item) ? '`' : 38);
                 }
             }
 

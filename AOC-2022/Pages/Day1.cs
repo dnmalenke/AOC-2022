@@ -11,7 +11,7 @@ namespace AOC_2022.Pages
             List<int> sums = new();
 
             int sum = 0;
-            foreach (var line in _input.Split("\n"))
+            foreach (var line in _input.Lines)
             {
                 if (int.TryParse(line, out int num))
                 {
@@ -23,16 +23,22 @@ namespace AOC_2022.Pages
                     sum = 0;
                 }
             }
+
             sums.Add(sum);
             sums.Sort();
+
             _result = $"part 1 max sum: {sums.Max()}";
+
             _result += "\npart 2: top 3 amounts:\n";
+
             sum = 0;
+
             foreach (var item in sums.TakeLast(3))
             {
                 _result += $"{item}\n";
                 sum += item;
             }
+
             _result += $"top 3 sum: {sum}";
 
             StateHasChanged();

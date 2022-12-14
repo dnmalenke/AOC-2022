@@ -2,7 +2,7 @@
 {
     public abstract partial class DayTemplate
     {
-        protected string _input = "";
+        protected Input _input = new();
         protected string _result = "";
 
         private string _title = "";

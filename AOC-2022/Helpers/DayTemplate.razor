@@ -12,7 +12,7 @@
 <h3>Input</h3>
 
 <EditForm Model="_input" OnSubmit="Run">
-    <InputTextArea class="form-control" @bind-Value="_input" />
+    <InputTextArea class="form-control" @bind-Value="_input.Value" />
     <br />
     <button class="btn btn-primary">Submit</button>
 </EditForm>
@@ -22,16 +22,16 @@
 
 @code {
     private int _day = -1;
-
+    
     private async Task Save(int slot)
     {
-        await _aocHelper.SaveInput(GetDay(), slot, _input);
+        await _aocHelper.SaveInput(GetDay(), slot, _input.Value);
         _result += $"\nSaved to slot {slot}";
     }
 
     private async Task Load(int slot)
     {
-        _input = await _aocHelper.LoadInput(GetDay(), slot);
+        _input.Value = await _aocHelper.LoadInput(GetDay(), slot);
         _result += $"\nLoaded from slot {slot}";
     }
 

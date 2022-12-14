@@ -14,7 +14,7 @@ namespace AOC_2022.Pages
             string curPath = "";
             Dictionary<string, int> sizes = new();
             List<string> files = new();
-            foreach (var line in _input.Split('\n'))
+            foreach (var line in _input.Lines)
             {
                 if (line.StartsWith("$"))
                 {
@@ -48,8 +48,7 @@ namespace AOC_2022.Pages
 
                     if (!line.StartsWith("dir"))
                     {
-
-                        sizes[curPath] += int.Parse(line.Split(' ')[0]);
+                        sizes[curPath] += line.ParseNumber();
 
                         files.Add(curPath + line.Split(' ')[1]);
                     }
@@ -91,7 +90,7 @@ namespace AOC_2022.Pages
             int freeSpace = totalSpace - sizes2["//"];
             int spaceNeeded = spaceRequired - freeSpace;
 
-            var toDelete = sizes2.Where(x => x.Value >= spaceNeeded).OrderBy(x => x.Value).FirstOrDefault();
+            var toDelete = sizes2.Where(x => x.Value >= spaceNeeded).MinBy(x => x.Value);
 
             _result += $"\nspace needed {spaceNeeded}\ndeleting {toDelete.Key}, size: {toDelete.Value}";
 

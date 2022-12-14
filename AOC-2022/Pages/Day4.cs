@@ -12,7 +12,7 @@ namespace AOC_2022.Pages
 
             _result = "";
 
-            foreach (var line in _input.Split("\n"))
+            foreach (var line in _input.Lines)
             {
                 string[] pairs = line.Split(',');
                 Pair pair0 = new(pairs[0]);
@@ -27,7 +27,7 @@ namespace AOC_2022.Pages
 
             sum = 0;
 
-            foreach (var line in _input.Split("\n"))
+            foreach (var line in _input.Lines)
             {
                 string[] pairs = line.Split(',');
                 Pair pair0 = new(pairs[0]);

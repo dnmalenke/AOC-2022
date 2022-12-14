@@ -11,13 +11,11 @@ namespace AOC_2022.Pages
             _result = "";
             int sum = 0;
 
-            var spl = _input.Split('\n');
-
             string prev = "";
             List<PacketPair> packets = new();
             List<Packet> ps = new();
 
-            foreach (var line in spl)
+            foreach (var line in _input.Lines)
             {
                 if (line != "")
                 {

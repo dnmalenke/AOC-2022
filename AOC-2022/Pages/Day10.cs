@@ -93,15 +93,7 @@ namespace AOC_2022.Pages
                 }
             }
 
-            for (int i = 0; i < 6; i++)
-            {
-                _result += "\n";
-                _result += new string(Enumerable.Range(0, 40)
-                .Select(s => crt[s, i])
-                .ToArray());
-                
-            }
-
+            _result += $"\n{Util.StringifyGrid(crt)}";
             _result += $"\npart 2: {cyc}";
         }
 

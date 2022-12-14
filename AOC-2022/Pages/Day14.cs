@@ -1,7 +1,6 @@
 ﻿using AOC_2022.Helpers;
 using Microsoft.AspNetCore.Components;
 using System;
-using System.Drawing;
 using System.Text;
 
 namespace AOC_2022.Pages
@@ -15,65 +14,49 @@ namespace AOC_2022.Pages
             int sum = 0;
 
             var spl = _input.Split('\n');
-            List<Line> lines = new List<Line>();
+            List<Line> lines = new();
             foreach (var line in spl)
             {
                 lines.Add(new(line));
             }
 
-            int minX = lines.MinBy(l => l.MinX).MinX;
-            int maxX = lines.MaxBy(l => l.MaxX).MaxX + 1;
-            int maxY = lines.MaxBy(l => l.MaxY).MaxY + 1;
+            int minX = lines.MinVal(l => l.MinX);
+            int maxX = lines.MaxVal(l => l.MaxX) + 1;
+            int maxY = lines.MaxVal(l => l.MaxY) + 1;
 
             int width = maxX - minX;
 
             char[,] scan = new char[width, maxY];
 
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < maxY; y++)
-                {
-                    scan[x, y] = '.';
-                }
-            }
+            scan.Fill('.');
 
-            foreach (var line in lines)
-            {
-                line.AddLines(ref scan, width, maxY, minX);
-            }
+            lines.ForEach(l => l.AddLines(ref scan, minX));
 
             while (!DropSand(ref scan, ref width, maxY, ref minX, true))
             {
                 sum++;
             }
 
-            _result += $"\npart 1: {sum }";
-            _result += $"\n\n{StringifyGrid(scan)}";
-
+            _result += $"\npart 1: {sum}";
+            _result += $"\n\n{Util.StringifyGrid(scan)}";
 
             sum = 0;
 
             lines.Add(new($"{minX},{maxY + 1} -> {maxX},{maxY + 1}"));
 
-            minX = lines.MinBy(l => l.MinX).MinX;
-            maxX = lines.MaxBy(l => l.MaxX).MaxX + 1;
-            maxY = lines.MaxBy(l => l.MaxY).MaxY + 1;
+            minX = lines.MinVal(l => l.MinX);
+            maxX = lines.MaxVal(l => l.MaxX) + 1;
+            maxY = lines.MaxVal(l => l.MaxY) + 1;
 
             width = maxX - minX;
 
             scan = new char[width, maxY];
 
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < maxY; y++)
-                {
-                    scan[x, y] = '.';
-                }
-            }
+            scan.Fill('.');
 
             foreach (var line in lines)
             {
-                line.AddLines(ref scan, width, maxY, minX);
+                line.AddLines(ref scan, minX);
             }
 
             while (!DropSand(ref scan, ref width, maxY, ref minX, false))
@@ -82,11 +65,10 @@ namespace AOC_2022.Pages
             }
 
             _result += $"\npart 2: {sum + 1}";
-            _result += $"\n\n{StringifyGrid(scan)}";
-
+            _result += $"\n\n{Util.StringifyGrid(scan)}";
         }
 
-        public bool DropSand(ref char[,] grid, ref int width, int height, ref int offset, bool p1)
+        private static bool DropSand(ref char[,] grid, ref int width, int height, ref int offset, bool p1)
         {
             int x = 500 - offset;
             int i = 0;
@@ -109,7 +91,7 @@ namespace AOC_2022.Pages
                         width++;
                         ResizeArray(ref grid, width, height, true);
 
-                        for (int yy = 0; yy < height-1; yy++)
+                        for (int yy = 0; yy < height - 1; yy++)
                         {
                             grid[x, yy] = '.';
                         }
@@ -127,7 +109,7 @@ namespace AOC_2022.Pages
 
                     if (x + 1 == width)
                     {
-                        if(p1)
+                        if (p1)
                             return true;
                         width++;
                         ResizeArray(ref grid, width, height, false);
@@ -157,7 +139,7 @@ namespace AOC_2022.Pages
 
             grid[x, i - 1] = 'O';
 
-            if(i == 1)
+            if (i == 1)
             {
                 return true;
             }
@@ -165,32 +147,15 @@ namespace AOC_2022.Pages
             return false;
         }
 
-        void ResizeArray(ref char[,] original, int newCoNum, int newRoNum, bool left)
+        private static void ResizeArray<T>(ref T[,] original, int newCoNum, int newRoNum, bool left)
         {
-            var newArray = new char[newCoNum, newRoNum];
+            var newArray = new T[newCoNum, newRoNum];
             int columnCount = original.GetLength(1);
-            int columnCount2 = newRoNum ;
+            int columnCount2 = newRoNum;
             int columns = original.GetUpperBound(0);
             for (int co = 0; co <= columns; co++)
-                Array.Copy(original, co * columnCount, newArray, (co+ (left ? 1 : 0)) * columnCount2 , columnCount);
+                Array.Copy(original, co * columnCount, newArray, (co + (left ? 1 : 0)) * columnCount2, columnCount);
             original = newArray;
-        }
-
-        public string StringifyGrid(char[,] grid)
-        {
-            StringBuilder sb = new();
-
-            for (int y = 0; y <= grid.GetUpperBound(1); y++)
-            {
-                for (int x = 0; x <= grid.GetUpperBound(0); x++)
-                {
-                    sb.Append(grid[x, y]);
-                }
-
-                sb.Append('\n');
-            }
-
-            return sb.ToString();
         }
 
         private class Line
@@ -201,13 +166,11 @@ namespace AOC_2022.Pages
             {
                 foreach (var item in l.Split("-"))
                 {
-                    string p = item.Trim('>').Trim();
-                    var spl = p.Split(',');
-                    Points.Add(new(int.Parse(spl[0]), int.Parse(spl[1])));
+                    Points.Add(new Point(item));
                 }
             }
 
-            public void AddLines(ref char[,] scan, int width, int height, int offset)
+            public void AddLines(ref char[,] scan, int offset)
             {
                 for (int i = 0; i < Points.Count - 1; i++)
                 {
@@ -232,44 +195,11 @@ namespace AOC_2022.Pages
                 }
             }
 
-            public int MaxY => Points.MaxBy(x => x.Y).Y;
+            public int MaxY => Points.MaxVal(x => x.Y);
 
-            public int MaxX => Points.MaxBy(x => x.X).X;
+            public int MaxX => Points.MaxVal(x => x.X);
 
-            public int MinX => Points.MinBy(x => x.X).X;
-        }
-
-        private class Point : IEquatable<Point>
-        {
-            public Point(int x, int y)
-            {
-                X = x;
-                Y = y;
-            }
-            public int X { get; set; }
-            public int Y { get; set; }
-
-            public override bool Equals(object? obj)
-            {
-                return obj != null &&
-                X == ((Point)obj).X &&
-                Y == ((Point)obj).Y;
-            }
-
-            public bool Equals(Point? other)
-            {
-                return other != null &&
-                X == ((Point)other).X &&
-                Y == ((Point)other).Y;
-            }
-
-            // override object.GetHashCode
-            public override int GetHashCode()
-            {
-                return HashCode.Combine(X, Y);
-            }
+            public int MinX => Points.MinVal(x => x.X);
         }
     }
-
-
 }

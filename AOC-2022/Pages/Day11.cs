@@ -75,48 +75,47 @@ namespace AOC_2022.Pages
 
             int mNum = 0;
 
-            foreach (var line in _input.Split('\n'))
+            foreach (var line in _input.Lines)
             {
-                if (line.StartsWith("Monkey"))
-                {
-                    mNum = int.Parse(line.Split(' ')[1].TrimEnd(':'));
-                    m.Add(mNum, new());
-                }
+                string trimmed = line.Trim();
 
-                if (line.Trim().StartsWith("Starting items"))
-                {
-                    foreach (var item in line.Trim().Split(' ').Skip(2))
+                Util.Case(trimmed.StartsWith,
+                    ("Monkey", () =>
                     {
-                        int iNum = int.Parse(item.Trim(','));
-                        m[mNum].Items.Add((ulong)iNum);
+                        mNum = trimmed.ParseNumber();
+                        m.Add(mNum, new());
                     }
-                }
-
-                if (line.Trim().StartsWith("Operation"))
-                {
-                    m[mNum].Operation = line.Trim();
-                }
-
-                if (line.Trim().StartsWith("Test"))
-                {
-                    var spl = line.Split(' ');
-
-                    m[mNum].Test = (ulong)int.Parse(spl[5]);
-                }
-
-                if (line.Trim().StartsWith("If true"))
-                {
-                    var spl = line.Split(' ');
-
-                    m[mNum].TrueDest = int.Parse(spl[9]);
-                }
-
-                if (line.Trim().StartsWith("If false"))
-                {
-                    var spl = line.Split(' ');
-
-                    m[mNum].FalseDest = int.Parse(spl[9]);
-                }
+                ),
+                     ("Starting items", () =>
+                     {
+                         foreach (var item in line.Trim().Split(' ').Skip(2))
+                         {
+                             int iNum = item.ParseNumber();
+                             m[mNum].Items.Add((ulong)iNum);
+                         }
+                     }
+                ),
+                     ("Operation", () =>
+                     {
+                         m[mNum].Operation = trimmed;
+                     }
+                ),
+                     ("Test", () =>
+                    {
+                        m[mNum].Test = (ulong)trimmed.ParseNumber();
+                    }
+                ),
+                      ("If true", () =>
+                      {
+                          m[mNum].TrueDest = trimmed.ParseNumber();
+                      }
+                ),
+                       ("If false", () =>
+                       {
+                           m[mNum].FalseDest = trimmed.ParseNumber();
+                       }
+                )
+                    );
             }
 
             return m;

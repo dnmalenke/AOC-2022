@@ -11,21 +11,10 @@ namespace AOC_2022.Pages
         {
             _result = "";
             int sum = 0;
-            int height = _input.Split('\n').Length;
-            int width = _input.Split('\n')[0].Length;
 
-            int[,] forest = new int[width, height];
-            int y = 0;
-            foreach (var line in _input.Split('\n'))
-            {
-                int x = 0;
-                foreach (var c in line)
-                {
-                    forest[x, y] = int.Parse(c.ToString());
-                    x++;
-                }
-                y++;
-            }
+            int[,] forest = _input.ToProcessedGrid((x, y, val) => int.Parse($"{val}"));
+            int height = forest.Height();
+            int width = forest.Width();
 
             List<Point> points = new();
             Dictionary<Point, int> scores = new();
@@ -239,19 +228,8 @@ namespace AOC_2022.Pages
                 }
             }
 
-            _result += $"\npart 2 max: {scores.MaxBy(x => x.Value).Key.X},{scores.MaxBy(x => x.Value).Key.Y} : {scores.MaxBy(x => x.Value).Value}";
+            _result += $"\npart 2 max: {scores.MaxBy(x => x.Value).Key.X},{scores.MaxBy(x => x.Value).Key.Y} : {scores.MaxVal(x => x.Value)}";
 
-        }
-
-        private struct Point
-        {
-            public Point(int x, int y)
-            {
-                X = x;
-                Y = y;
-            }
-            public int X { get; set; }
-            public int Y { get; set; }
         }
     }
 }

@@ -12,7 +12,7 @@ namespace AOC_2022.Pages
 
             Dictionary<int, List<char>> supply = new();
 
-            foreach (var line in _input.Split("\n"))
+            foreach (var line in _input.Lines)
             {
                 if (line.StartsWith("move"))
                 {
@@ -55,7 +55,7 @@ namespace AOC_2022.Pages
 
             supply = new();
 
-            foreach (var line in _input.Split("\n"))
+            foreach (var line in _input.Lines)
             {
                 if (line.StartsWith("move"))
                 {

@@ -1,15 +1,5 @@
 ﻿using AOC_2022.Helpers;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Drawing;
-using System.Linq.Expressions;
-using System.Numerics;
-using System.Runtime.Serialization;
-using System.Text;
 
 namespace AOC_2022.Pages
 {

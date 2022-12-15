@@ -9,7 +9,7 @@ namespace AOC_2022.Pages
     [Route($"/{nameof(Day11)}")]
     public class Day11 : DayTemplate
     {
-        public static ulong MagicNumber = 0;
+        internal static ulong MagicNumber = 0;
 
         protected override void Run()
         {
@@ -149,7 +149,7 @@ namespace AOC_2022.Pages
 
             foreach (var item in Items)
             {
-                ulong res = 0;
+                ulong res;
                 if (spl[4] == "*")
                 {
                     if (n == -1)
@@ -188,7 +188,7 @@ namespace AOC_2022.Pages
                 }
                 else
                 {
-                    res = res % Day11.MagicNumber;
+                    res %= Day11.MagicNumber;
                 }
                 //if (res % Test == 0)
                 //{

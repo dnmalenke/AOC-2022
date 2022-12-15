@@ -15,11 +15,8 @@ namespace AOC_2022.Helpers
         public static bool TryParseNumber(this string input, out int result) => int.TryParse(input.GetNumber(), out result);
 
 
-
-#pragma warning disable CS8603 // Possible null reference return.
-        public static TResult MinVal<T, TResult>(this IEnumerable<T> values, Func<T, TResult> selector) => values.Select(selector).Min();
-        public static TResult MaxVal<T, TResult>(this IEnumerable<T> values, Func<T, TResult> selector) => values.Select(selector).Max();
-#pragma warning restore CS8603 // Possible null reference return.
+        public static TResult? MinVal<T, TResult>(this IEnumerable<T> values, Func<T, TResult> selector) => values.Select(selector).Min();
+        public static TResult? MaxVal<T, TResult>(this IEnumerable<T> values, Func<T, TResult> selector) => values.Select(selector).Max();
 
         public static int Width<T>(this T[,] arr) => arr.GetUpperBound(0) + 1;
         public static int Height<T>(this T[,] arr) => arr.GetUpperBound(1) + 1;

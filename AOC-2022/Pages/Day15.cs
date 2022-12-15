@@ -12,7 +12,6 @@ namespace AOC_2022.Pages
         protected override void Run()
         {
             _result = "";
-            int sum = 0;
 
             List<Sensor> sensors = new();
 
@@ -26,11 +25,7 @@ namespace AOC_2022.Pages
             int range = _input.Lines.Length == 14 ? 20 : 4000000;
             int row = _input.Lines.Length == 14 ? 10 : 2000000;
 
-            // if distance from beacon is bigger than distance to row 10 then something
-
-            // distance = max(point.X, point.Y)
-
-            HashSet<Point> points = new HashSet<Point>();
+            HashSet<Point> points = new();
 
             //for (int x = 0; x <= 4000000; x++)
             //{
@@ -61,18 +56,23 @@ namespace AOC_2022.Pages
 
             _result += $"\npart 1: {points.Count}";
 
+            LL(sensors, range); // fastest implementation I could come up with
 
+            //  _result += $"\npart 2: {points.First()}";
+        }
 
-            for (int y = 0; y <= range; y++)
+        public void LL(List<Sensor> sensors, int range)
+        {
+            for (int y = 0; y <= range; y++)// Parallel.For(0, range + 1, (y) => 
             {
-                if(y % 1000 == 0)
+                if (y % 10000 == 0)
                     Console.WriteLine($"y: {y}");
                 //  var rr = Enumerable.Range(0, 4000000 + 1);
-                List<(int min, int max)> vals = new();
+                LinkedList<(int min, int max)> vals = new(); // adding is O(1) all the time instead of O(n) in List<T>
                 foreach (var s in sensors)
                 {
                     int num = s.NumAtY(y);
-                    int x = (int)Math.Ceiling(num / 2.0) - num + s.X;
+                    int x = ((num + 2 - 1) / 2) - num + s.X; //(int)Math.Ceiling(num / 2.0) ; uses faster ceiling formula
                     int maxX = x + num > range ? range : x + num - 1;
 
                     int min = x < 0 ? 0 : x;
@@ -82,68 +82,80 @@ namespace AOC_2022.Pages
                     }
                     else
                     {
-                        vals.Add((min, maxX));
+                        vals.AddLast((min, maxX));
                     }
                 }
 
                 int xxx = 0;
 
+
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 while (vals.Count > 1)
                 {
-                    List<(int min, int max)> nVals = new();
-
+                    //  List<(int min, int max)> nVals = new();
+                    (int min, int max) newVal;
+                    var curNode = vals.First;
                     for (int i = 0; i < vals.Count; i++)
                     {
+                        var nNode = curNode.Next;
                         for (int j = i + 1; j < vals.Count; j++)
                         {
-                            if (vals[i].max >= vals[j].min - 1 && vals[j].max >= vals[i].min - 1)
+
+                            var cv = curNode.Value;
+                            var nv = nNode.Value;
+                            if (cv.max >= nv.min - 1 && nv.max >= cv.min - 1)
                             {
-                                if (vals[i].max > vals[j].max)
+                                if (cv.max > nv.max)
                                 {
-                                    if (vals[i].min < vals[j].min)
+                                    if (cv.min < nv.min)
                                     {
-                                        nVals.Add((vals[i].min, vals[i].max));
+                                        vals.Remove(nNode);
+                                        goto end;
+                                        // newVal = (curNode.Value.min, curNode.Value.max);
                                     }
                                     else
                                     {
-                                        nVals.Add((vals[j].min, vals[i].max));
+                                        newVal = (nv.min, cv.max);
+                                        vals.Remove(nNode);
+                                        vals.Remove(curNode);
+                                        vals.AddLast(newVal);
+                                        goto end;
                                     }
                                 }
                                 else
                                 {
-                                    if (vals[i].min < vals[j].min)
+                                    if (cv.min < nv.min)
                                     {
-                                        nVals.Add((vals[i].min, vals[j].max));
+                                        newVal = (cv.min, nv.max);
+                                        vals.Remove(nNode);
+                                        vals.Remove(curNode);
+                                        vals.AddLast(newVal);
+                                        goto end;
                                     }
                                     else
                                     {
-                                        nVals.Add((vals[j].min, vals[j].max));
+                                        vals.Remove(curNode);
+                                        goto end;
+                                        //newVal = (vals[j].min, vals[j].max);
                                     }
                                 }
-
-                                var l = vals[i];
-                                var ll = vals[j];
-
-                                vals.Remove(l);
-                                vals.Remove(ll);
-
-                                nVals.AddRange(vals);
-                                goto end;
                             }
 
-                            if (vals[i].max >= vals[j].max && vals[i].min <= vals[j].min)
+                            if (cv.max >= nv.max && cv.min <= nv.min)
                             {
-                                vals.RemoveAt(j);
+                                vals.Remove(nNode);
                                 goto end;
                             }
+                            nNode = nNode.Next;
                         }
+                        curNode = curNode.Next;
                     }
                 end:
-                    if (nVals.Count > 0)
-                    {
-                        vals.Clear();
-                        vals.AddRange(nVals);
-                    }
+                    //if (nVals.Count > 0)
+                    //{
+                    //    vals.Clear();
+                    //    vals.AddRange(nVals);
+                    //}
 
                     if (vals.Count == 2)
                     {
@@ -151,8 +163,8 @@ namespace AOC_2022.Pages
 
                         if (xxx == 3)
                         {
-                            var v1 = vals[0];
-                            var v2 = vals[1];
+                            var v1 = vals.First.Value;
+                            var v2 = vals.First.Next.Value;
                             ulong x;
 
                             if (v1.max < v2.max)
@@ -164,7 +176,7 @@ namespace AOC_2022.Pages
                                 x = (ulong)v2.max + 1;
                             }
 
-                            _result += $"\npart 2:{x} {y} {x * (ulong)4000000 + (ulong)y}";
+                            _result += $"\npart 2:{x} {y} {x * 4000000 + (ulong)y}";
 
                             Console.WriteLine($"FINISHED {y} {vals.First().min} {vals.First().max} {vals.Last().min} {vals.Last().max}");
                             range = 0;
@@ -172,36 +184,30 @@ namespace AOC_2022.Pages
                         }
                     }
                 }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             }
-
-          //  _result += $"\npart 2: {points.First()}";
         }
+
 
         public record class Sensor : Point
         {
             public Point Beacon { get; set; }
 
-            public new int Distance
-            {
-                get
-                {
-                    return Math.Abs(X - Beacon.X) + Math.Abs(Y - Beacon.Y);
-                }
-            }
+            private readonly int _distance;
 
             public int NumAtY(int y)
             {
                 if (y >= Y)
                 {
-                    if (Y + Distance >= y)
-                        return ((Math.Abs(Y + Distance - y) + 1) * 2 - 1);
+                    if (Y + _distance >= y)
+                        return ((Math.Abs(Y + _distance - y) + 1) * 2 - 1);
 
                     return 0;
                 }
 
 
-                if (Y - Distance <= y)
-                    return ((Math.Abs(Y - Distance - y) + 1) * 2 - 1);
+                if (Y - _distance <= y)
+                    return ((Math.Abs(Y - _distance - y) + 1) * 2 - 1);
                 return 0;
             }
 
@@ -225,6 +231,7 @@ namespace AOC_2022.Pages
             public Sensor(int x, int y, int bx, int by) : base(x, y)
             {
                 Beacon = new Point(bx, by);
+                _distance = Math.Abs(X - Beacon.X) + Math.Abs(Y - Beacon.Y);
             }
         }
     }

@@ -27,14 +27,6 @@ namespace AOC_2022.Pages
 
             HashSet<Point> points = new();
 
-            //for (int x = 0; x <= 4000000; x++)
-            //{
-            //    for (int yy = 0; yy <= 4000000; yy++)
-            //    {
-            //        points.Add(new(x, yy));
-            //    }
-            //}
-
             Console.WriteLine("created hashset");
 
             foreach (var s in sensors)
@@ -111,7 +103,6 @@ namespace AOC_2022.Pages
                                     {
                                         vals.Remove(nNode);
                                         goto end;
-                                        // newVal = (curNode.Value.min, curNode.Value.max);
                                     }
                                     else
                                     {
@@ -136,7 +127,6 @@ namespace AOC_2022.Pages
                                     {
                                         vals.Remove(curNode);
                                         goto end;
-                                        //newVal = (vals[j].min, vals[j].max);
                                     }
                                 }
                             }
@@ -151,12 +141,6 @@ namespace AOC_2022.Pages
                         curNode = curNode.Next;
                     }
                 end:
-                    //if (nVals.Count > 0)
-                    //{
-                    //    vals.Clear();
-                    //    vals.AddRange(nVals);
-                    //}
-
                     if (vals.Count == 2)
                     {
                         xxx++;

@@ -8,6 +8,8 @@ namespace AOC_2022.Helpers
 
         public string[] Lines => Value.Split('\n');
 
+        public int Length => Value.Length;
+
         public char[,]? ToGrid()
         {
             if (Lines.Select(l => l.Length).Distinct().Count() != 1)
